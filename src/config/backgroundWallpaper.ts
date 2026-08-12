@@ -1,20 +1,49 @@
 import type { FullscreenWallpaperConfig } from "../types/config";
 
+// 覆盖 / 全屏壁纸与首页横幅共用同一套图片，避免切换模式后回到模板默认壁纸。
+const tidalriteWallpaperImages = [
+	"/assets/desktop-banner/tidalrite/5.jpg",
+	"/assets/desktop-banner/tidalrite/10.jpg",
+	"/assets/desktop-banner/tidalrite/11.jpg",
+	"/assets/desktop-banner/tidalrite/15.jpg",
+	"/assets/desktop-banner/tidalrite/17.webp",
+	"/assets/desktop-banner/tidalrite/18.webp",
+	"/assets/desktop-banner/tidalrite/19.webp",
+	"/assets/desktop-banner/tidalrite/20.webp",
+	"/assets/desktop-banner/tidalrite/22.webp",
+	"/assets/desktop-banner/tidalrite/23.webp",
+	"/assets/desktop-banner/tidalrite/24.webp",
+	"/assets/desktop-banner/tidalrite/25.webp",
+	"/assets/desktop-banner/tidalrite/26.webp",
+	"/assets/desktop-banner/tidalrite/27.webp",
+	"/assets/desktop-banner/tidalrite/28.webp",
+	"/assets/desktop-banner/tidalrite/29.webp",
+	"/assets/desktop-banner/tidalrite/30.webp",
+	"/assets/desktop-banner/tidalrite/31.webp",
+	"/assets/desktop-banner/tidalrite/32.webp",
+	"/assets/desktop-banner/tidalrite/33.webp",
+	"/assets/desktop-banner/tidalrite/34.webp",
+	"/assets/desktop-banner/tidalrite/35.webp",
+	"/assets/desktop-banner/tidalrite/36.webp",
+	"/assets/desktop-banner/tidalrite/37.webp",
+	"/assets/desktop-banner/tidalrite/wechat-01.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-02.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-03.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-04.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-05.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-06.png",
+	"/assets/desktop-banner/tidalrite/wechat-07.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-08.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-09.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-10.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-11.jpg",
+];
+
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	enable: true,
 	src: {
-		desktop: [
-			"/assets/desktop-banner/1.webp",
-			"/assets/desktop-banner/2.webp",
-			"/assets/desktop-banner/3.webp",
-			"/assets/desktop-banner/4.webp",
-		],
-		mobile: [
-			"/assets/mobile-banner/1.webp",
-			"/assets/mobile-banner/2.webp",
-			"/assets/mobile-banner/3.webp",
-			"/assets/mobile-banner/4.webp",
-		],
+		desktop: tidalriteWallpaperImages,
+		mobile: tidalriteWallpaperImages,
 	},
 	position: "center",
 	carousel: {

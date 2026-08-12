@@ -7,7 +7,7 @@ import type { FancyboxOptions } from "@fancyapps/ui";
 
 // Banner 高度常量
 export const BANNER_HEIGHT = 35;
-export const BANNER_HEIGHT_EXTEND = 30;
+export const BANNER_HEIGHT_EXTEND = 37;
 export const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 
 // 选择器配置

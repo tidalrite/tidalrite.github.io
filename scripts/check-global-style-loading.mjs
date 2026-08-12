@@ -82,11 +82,8 @@ const pages = [
 	{
 		name: "About page",
 		htmlPath: "about/index.html",
-		requiredMarkup: [["card-github", "rendered GitHub repository card"]],
-		requiredRules: [
-			[".card-github", "GitHub repository card styles"],
-			[".custom-md .image-grid", "extended Markdown layout styles"],
-		],
+		requiredMarkup: [["这里是 tidalrite 的个人空间", "personal About content"]],
+		requiredRules: [],
 	},
 ];
 

@@ -4,6 +4,19 @@
 <style>
   * { margin: 0; padding: 0; }
   html, body { width: 100%; height: 100%; overflow: hidden; background: transparent; }
+
+  /* The widget creates its tip bubble with `white-space: nowrap` inline.
+     Keep long Chinese dialogue inside the Live2D area instead of clipping it. */
+  div[style*="max-width: 200px"][style*="white-space: nowrap"] {
+    box-sizing: border-box !important;
+    width: min(280px, calc(100vw - 24px)) !important;
+    max-width: min(280px, calc(100vw - 24px)) !important;
+    max-height: min(42vh, 260px);
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    overflow-y: auto;
+  }
 </style>
 </head>
 <body>

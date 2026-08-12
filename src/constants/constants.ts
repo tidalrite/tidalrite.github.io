@@ -7,7 +7,8 @@ export const DEFAULT_THEME = LIGHT_MODE;
 // Banner height unit: vh
 export const BANNER_HEIGHT = 35;
 export const BANNER_HEIGHT_FULLSCREEN = 100;
-export const BANNER_HEIGHT_EXTEND = 30;
+// 首页横幅在桌面端额外延伸，使竖版插画有更舒展的展示空间。
+export const BANNER_HEIGHT_EXTEND = 37;
 export const BANNER_HEIGHT_HOME = BANNER_HEIGHT + BANNER_HEIGHT_EXTEND;
 
 // The height the main panel overlaps the banner, unit: rem

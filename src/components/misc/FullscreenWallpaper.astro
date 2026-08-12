@@ -145,19 +145,14 @@ const renderGroups = [
 							data-carousel-item={index}
 							style={`transform: translateZ(0); backface-visibility: hidden; will-change: opacity; opacity: ${index === 0 ? 1 : 0};`}
 						>
-							<Image
-								src={src}
-								alt={`${group.key} wallpaper ${index + 1}`}
-								class="w-full h-full"
-								position={position}
-								widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]}
-								sizes="100vw"
-								loading="lazy"
-								fetchpriority="low"
-								quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality}
-								formats={wallpaperFormats}
-								overlay={false}
-							/>
+							<div class="wallpaper-artwork absolute inset-0">
+								<div class="wallpaper-artwork-backdrop absolute inset-0" aria-hidden="true">
+									<Image src={src} alt="" class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
+								</div>
+								<div class="wallpaper-artwork-foreground relative z-10 h-full w-full">
+									<Image src={src} alt={`${group.key} wallpaper ${index + 1}`} class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
+								</div>
+							</div>
 						</div>
 				))}
 			</div>
@@ -227,6 +222,43 @@ const renderGroups = [
 		}
 	})();
 </script>
+
+<style is:global>
+	/* 覆盖 / 全屏壁纸：完整展示原图，模糊放大的同图补足屏幕空白。 */
+	.wallpaper-artwork {
+		background: #11131d;
+	}
+
+	.wallpaper-artwork-backdrop {
+		overflow: hidden;
+		background: #11131d;
+	}
+
+	.wallpaper-artwork-backdrop > div {
+		height: 100%;
+		width: 100%;
+		transform: scale(1.12);
+		filter: blur(1.5rem);
+	}
+
+	.wallpaper-artwork-backdrop::after {
+		content: "";
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+		background: rgb(7 9 18 / 0.18);
+	}
+
+	.wallpaper-artwork-foreground > div {
+		height: 100%;
+		width: 100%;
+	}
+
+	.wallpaper-artwork-foreground img {
+		object-fit: contain !important;
+		filter: drop-shadow(0 1rem 2rem rgb(0 0 0 / 0.35));
+	}
+</style>
 
 <script is:inline define:vars={{ carouselInterval }}>
 	function initFullscreenWallpaperCarousel() {

@@ -306,6 +306,58 @@ body.wallpaper-transparent #toc-inner-wrapper:has(table-of-contents[data-loaded=
   will-change: transform, opacity;
 }
 
+/* 竖版插画不再被横向横幅强制裁切：清晰前景完整展示，
+   同图的模糊放大版负责填满背景。 */
+.desktop-banner-artwork {
+  background: #11131d;
+}
+
+.desktop-banner-artwork-backdrop {
+  overflow: hidden;
+  background: #11131d;
+}
+
+.desktop-banner-artwork-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgb(7 9 18 / 0.5), rgb(7 9 18 / 0.2), rgb(7 9 18 / 0.5));
+}
+
+.desktop-banner-artwork-foreground {
+  filter: drop-shadow(0 1.25rem 2rem rgb(0 0 0 / 0.35));
+}
+
+/* 移动端复用桌面图库；竖版插画同样完整展示，背景由模糊放大图填充。 */
+.mobile-banner-artwork {
+  background: #11131d;
+}
+
+.mobile-banner-artwork-backdrop {
+  overflow: hidden;
+  background: #11131d;
+}
+
+.mobile-banner-artwork-backdrop::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(7 9 18 / 0.25), rgb(7 9 18 / 0.48));
+}
+
+.mobile-banner-artwork-foreground {
+  filter: drop-shadow(0 0.75rem 1.25rem rgb(0 0 0 / 0.35));
+}
+
+/* Ken Burns 只应用在模糊背景，避免把完整立绘再一次放大裁切。 */
+.banner-image-slot-desktop.banner-kb {
+  animation: none !important;
+}
+
+.banner-image-slot-desktop.banner-kb .desktop-banner-artwork-backdrop {
+  animation: bannerKenBurns 7500ms ease-out forwards;
+}
+
 .banner-image-slot-mobile img,
 .banner-image-slot-desktop img,
 #banner img {
