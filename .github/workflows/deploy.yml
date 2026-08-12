@@ -35,7 +35,9 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       
       - name: Build site
-        run: pnpm run build
+        run: |
+          pnpm run build
+          touch dist/.nojekyll
       
       - name: Deploy to pages branch
         uses: JamesIves/github-pages-deploy-action@v4
