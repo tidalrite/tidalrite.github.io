@@ -666,3 +666,9 @@ html {
 :root:not(.dark) .custom-md spoiler {
   --_spoiler-mask: color-mix(in oklch, var(--primary) 55%, white 45%);
 }
+
+/* Pages cache revision: keep the stylesheet filename distinct from the
+ * pre-.nojekyll deployment, which could have cached a missing /_astro asset. */
+:root {
+  --pages-style-revision: 20260812;
+}
