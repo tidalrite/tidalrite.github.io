@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="zh_CN">
-  <title>tidalrite</title>
-  <subtitle>Personal space · Code · AI · Anime</subtitle>
+  <title>汐雩的小站</title>
+  <subtitle>No description</subtitle>
   <link href="https://tidalrite.github.io/" rel="alternate" type="text/html"/>
   <link href="https://tidalrite.github.io/atom.xml" rel="self" type="application/atom+xml"/>
   <id>https://tidalrite.github.io/</id>
