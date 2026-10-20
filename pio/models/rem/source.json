@@ -1,0 +1,169 @@
+{
+  "upstream": "https://github.com/evrstr/live2d-widget-models",
+  "commit": "48e4c734e1bbc09df9b77a1c50d1021b23043d6e",
+  "entry": "model.json",
+  "sourceUrl": "https://cdn.jsdelivr.net/gh/evrstr/live2d-widget-models@48e4c734e1bbc09df9b77a1c50d1021b23043d6e/live2d_evrstr/rem/model.json",
+  "license": "No license is declared in the upstream GitHub repository metadata.",
+  "files": [
+    {
+      "path": "model.json",
+      "bytes": 3308,
+      "sha256": "e56561f836f06794b2a40c0954d673a299da0cd3f291c2bd66be6cd42f6c2dc3"
+    },
+    {
+      "path": "motions/Live2D_remu01.mtn",
+      "bytes": 9203,
+      "sha256": "a2c6398c83364730932f813fe932c09d47e129953fa3dab4845f91ddc328280f"
+    },
+    {
+      "path": "motions/Live2D_remu02.mtn",
+      "bytes": 8375,
+      "sha256": "d84f6d053c0721fcad53e0479bd4450e21996b04aa038739678dc49c1475798f"
+    },
+    {
+      "path": "motions/Live2D_remu03.mtn",
+      "bytes": 14417,
+      "sha256": "839ef810bc8a752c2e933b37d8f66a99499eb216e0107929f061675ed0a5055f"
+    },
+    {
+      "path": "motions/Live2D_remu04.mtn",
+      "bytes": 25646,
+      "sha256": "e922c01d211e711e25f9cfe2026e7b5073613fff5c14c89cb293d543f5321fb5"
+    },
+    {
+      "path": "motions/Live2D_remu05.mtn",
+      "bytes": 16769,
+      "sha256": "b296ed611f80675c9f2062e7124d0ff4c85ae4ce90dee2657fe6eebda034608d"
+    },
+    {
+      "path": "motions/Live2D_remu06.mtn",
+      "bytes": 14827,
+      "sha256": "2bb459bd463c71c8e20d727edf986d5895b192b98e3e654d3c9eef5439bdf99c"
+    },
+    {
+      "path": "motions/Live2D_remu07.mtn",
+      "bytes": 11083,
+      "sha256": "23e922deee5cca8fedfc70bcf821bbf63ba6676cc3cc0d6b5a629955e8654eec"
+    },
+    {
+      "path": "motions/Live2D_remu08.mtn",
+      "bytes": 13043,
+      "sha256": "1c4ebc18d645b40c19320a5f1d8a64a776d0859eab0c5437b84c93ccecea3acd"
+    },
+    {
+      "path": "motions/Live2D_remu09.mtn",
+      "bytes": 21999,
+      "sha256": "08336d3f2b4902d5c0322d52c78378ce0bba1f4a87b0373a36a6a72e4f1ac761"
+    },
+    {
+      "path": "motions/Live2D_remu10.mtn",
+      "bytes": 25645,
+      "sha256": "9385659e334c152bece2a281d8d3906023fd7e41a3159d7206bd5f13c7352381"
+    },
+    {
+      "path": "motions/Live2D_remu11.mtn",
+      "bytes": 10232,
+      "sha256": "4c1b2852d0ead570ad949b77c450ef819326c68e1f7ef24e63a6806032319892"
+    },
+    {
+      "path": "motions/Live2D_remu12.mtn",
+      "bytes": 15043,
+      "sha256": "af80ecfa44d90b444a706a3e6d28701ba18c2f12a3f1a2244572382706a8e4ed"
+    },
+    {
+      "path": "motions/Live2D_remu13.mtn",
+      "bytes": 10213,
+      "sha256": "5b09ae92641add0cac461cfcc1b31b5beb7967ec2e34edad8900b499f1ba11fd"
+    },
+    {
+      "path": "motions/Live2D_remu14.mtn",
+      "bytes": 18571,
+      "sha256": "b4537d8e863f4f32f6bcc7c83f3d024bde72d13bb2826d9691cd0fe5f38f6ff5"
+    },
+    {
+      "path": "motions/Live2D_remu15.mtn",
+      "bytes": 35449,
+      "sha256": "f54fab464bcbd17714c84e73ed39a4cb67168690cf46b2c229a24892da232a41"
+    },
+    {
+      "path": "motions/Live2D_remu16.mtn",
+      "bytes": 31090,
+      "sha256": "72d9641a537a9e6a944fb05ba2e4bae8cc7f0d64dc2c34b3d5202e9912c59ddf"
+    },
+    {
+      "path": "motions/Live2D_remu17.mtn",
+      "bytes": 16596,
+      "sha256": "1c4aad6c73f531678965ef5ff68c0d5fc5ad1b04dcb29ffd6c91d3c20821b6a4"
+    },
+    {
+      "path": "motions/Live2D_remu18.mtn",
+      "bytes": 20845,
+      "sha256": "75314587fa6a7ed541d59c2a3a6ba86860c2a1acfa31ae340cbfc2d780c719a9"
+    },
+    {
+      "path": "motions/Live2D_remu19.mtn",
+      "bytes": 16998,
+      "sha256": "e7cd934feea131a40fd351445490d79c727b5352c884a1551548ddfbd0cda17b"
+    },
+    {
+      "path": "motions/Live2D_remu20.mtn",
+      "bytes": 24710,
+      "sha256": "18d68dbb418d3eaf8a7e269e486f43d0b5a498053cad1b8f2ec56eaa8eefb795"
+    },
+    {
+      "path": "motions/Live2D_remu21.mtn",
+      "bytes": 12288,
+      "sha256": "83562da9de53f35fdb69ef908416f6980db3524735322e5e8785570d03f5ffac"
+    },
+    {
+      "path": "motions/Live2D_remu22.mtn",
+      "bytes": 15887,
+      "sha256": "6a3a978b7a6e0e25c383ffecaac6df12e47102fb59a1914ee0539c5035db6700"
+    },
+    {
+      "path": "motions/Live2D_remu23.mtn",
+      "bytes": 12104,
+      "sha256": "cbf72a12adcdd5ca1ad6372d61bf98429b7d86fbc6edc0e92fcd8ebac5679d11"
+    },
+    {
+      "path": "motions/Live2D_remu24.mtn",
+      "bytes": 11313,
+      "sha256": "b0c239a94311d9b55b5911599ec4da83462491857b72b92957e775e7bf2d4fb9"
+    },
+    {
+      "path": "motions/Live2D_remu25.mtn",
+      "bytes": 9585,
+      "sha256": "a95b41c3820ebb3bc8f2cb4ce588c468ed329276216bf5a926de1640a82ab635"
+    },
+    {
+      "path": "motions/Live2D_remu26.mtn",
+      "bytes": 16741,
+      "sha256": "74896461a06f4cfb0bc1f3289d15331489cfe72fbcbe5b406b170b0ee7f4af5f"
+    },
+    {
+      "path": "motions/Live2D_remu_idle.mtn",
+      "bytes": 20174,
+      "sha256": "a32f2361db15631d949b073a22e2d7cfef9b12ce37ab81bb451ad0a6d207eca4"
+    },
+    {
+      "path": "remu.moc",
+      "bytes": 330141,
+      "sha256": "3236a2b3e7ae1cae2b632f374a56068b64a149d07a10dfba3a9588702d61ce59"
+    },
+    {
+      "path": "remu.physics.json",
+      "bytes": 5200,
+      "sha256": "90bc81cfecdb71cb86f35bb713ca483532babc617aa2d10ca9b365a8f96b2161"
+    },
+    {
+      "path": "remu.pose.json",
+      "bytes": 325,
+      "sha256": "e64c70e98a7265e02fec6b5c1d2ee5af9cb58f095de2d40fc0b8adcbb48f1975"
+    },
+    {
+      "path": "remu2048/texture_00.png",
+      "bytes": 3283470,
+      "sha256": "875dbebeef21e437de4b4ed08bd83b9b9f5f42e1620559c86b4e6a104bcecd76"
+    }
+  ]
+}
