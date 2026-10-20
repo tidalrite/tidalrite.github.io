@@ -3,9 +3,7 @@ import type { PioConfig } from "../types/config";
 // Pio 看板娘配置
 export const pioConfig: PioConfig = {
 	enable: true, // 启用看板娘
-	models: [
-		"https://cdn.jsdelivr.net/gh/evrstr/live2d-widget-models/live2d_evrstr/rem/model.json",
-	], // Rem（远程模型入口）
+	models: ["/pio/models/rem/model.json"], // Rem（本地模型入口）
 	position: "left", // 模型位置
 	width: 280, // 默认宽度
 	height: 250, // 默认高度

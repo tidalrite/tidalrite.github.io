@@ -190,9 +190,9 @@ const bannerOffset =
 		</script>
 
 		<!-- 第三方分析脚本 -->
-		<AnalyticsScripts
-			thirdPartyAnalytics={siteConfig.thirdPartyAnalytics}
-		/>
+		{siteConfig.thirdPartyAnalytics?.enable && (
+			<AnalyticsScripts thirdPartyAnalytics={siteConfig.thirdPartyAnalytics} />
+		)}
 
 		<!-- SEO Meta Tags, Open Graph, Twitter Card, Favicons, Theme Init -->
 		<HeadTags
@@ -229,13 +229,13 @@ const bannerOffset =
 
 		data-overlayscrollbars-initialize
 	>
-		<noscript
+		{siteConfig.thirdPartyAnalytics?.enable && <noscript
 			><iframe
 				src="https://www.googletagmanager.com/ns.html?id=GTM-KRX3XGVH"
 				height="0"
 				width="0"
 				style="display:none;visibility:hidden"></iframe></noscript
-		>
+		>}
 		<!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
 		{shouldShowTopHighlight && <div class="top-gradient-highlight" />}
 

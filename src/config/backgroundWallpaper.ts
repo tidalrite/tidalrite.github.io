@@ -2,10 +2,10 @@ import type { FullscreenWallpaperConfig } from "../types/config";
 
 // 覆盖 / 全屏壁纸与首页横幅共用同一套图片，避免切换模式后回到模板默认壁纸。
 const tidalriteWallpaperImages = [
-	"/assets/desktop-banner/tidalrite/5.jpg",
-	"/assets/desktop-banner/tidalrite/10.jpg",
-	"/assets/desktop-banner/tidalrite/11.jpg",
-	"/assets/desktop-banner/tidalrite/15.jpg",
+	"/assets/desktop-banner/tidalrite/5.webp",
+	"/assets/desktop-banner/tidalrite/10.webp",
+	"/assets/desktop-banner/tidalrite/11.webp",
+	"/assets/desktop-banner/tidalrite/15.webp",
 	"/assets/desktop-banner/tidalrite/17.webp",
 	"/assets/desktop-banner/tidalrite/18.webp",
 	"/assets/desktop-banner/tidalrite/19.webp",
@@ -26,17 +26,17 @@ const tidalriteWallpaperImages = [
 	"/assets/desktop-banner/tidalrite/35.webp",
 	"/assets/desktop-banner/tidalrite/36.webp",
 	"/assets/desktop-banner/tidalrite/37.webp",
-	"/assets/desktop-banner/tidalrite/wechat-01.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-02.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-03.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-04.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-05.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-06.png",
-	"/assets/desktop-banner/tidalrite/wechat-07.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-08.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-09.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-10.jpg",
-	"/assets/desktop-banner/tidalrite/wechat-11.jpg",
+	"/assets/desktop-banner/tidalrite/wechat-01.webp",
+	"/assets/desktop-banner/tidalrite/wechat-02.webp",
+	"/assets/desktop-banner/tidalrite/wechat-03.webp",
+	"/assets/desktop-banner/tidalrite/wechat-04.webp",
+	"/assets/desktop-banner/tidalrite/wechat-05.webp",
+	"/assets/desktop-banner/tidalrite/wechat-06.webp",
+	"/assets/desktop-banner/tidalrite/wechat-07.webp",
+	"/assets/desktop-banner/tidalrite/wechat-08.webp",
+	"/assets/desktop-banner/tidalrite/wechat-09.webp",
+	"/assets/desktop-banner/tidalrite/wechat-10.webp",
+	"/assets/desktop-banner/tidalrite/wechat-11.webp",
 ];
 
 export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {

@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
+import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
+import path from "node:path";
 import { describe, it } from "node:test";
 import { fileURLToPath } from "node:url";
 
@@ -300,14 +302,40 @@ describe("Markdown AST enhancements", () => {
 				},
 			],
 		};
-		await remarkWikiLink()(tree, {
-			path: fileURLToPath(
-				new URL(
-					"../src/content/posts/content-pipeline-fixture.mdx",
-					import.meta.url,
-				),
-			),
-		});
+		const postsDirectory = fileURLToPath(
+			new URL("../src/content/posts/", import.meta.url),
+		);
+		const fixtureDirectory = await mkdtemp(
+			path.join(postsDirectory, ".wiki-link-test-"),
+		);
+		const guideDirectory = path.join(fixtureDirectory, "guide");
+		const currentFile = path.join(fixtureDirectory, "current.mdx");
+		try {
+			await mkdir(guideDirectory);
+			await writeFile(
+				path.join(guideDirectory, "index.md"),
+				[
+					"---",
+					'title: "Guide"',
+					'slug: "guide"',
+					'image: "./cover.webp"',
+					'published: "2024-01-01"',
+					"---",
+					"Temporary wiki-link fixture.",
+				].join("\n"),
+			);
+			await writeFile(
+				path.join(guideDirectory, "cover.webp"),
+				"test-only cover path",
+			);
+			await writeFile(currentFile, "Temporary current post.");
+
+			await remarkWikiLink({ noReferrerDomains: ["*.example.com"] })(tree, {
+				path: currentFile,
+			});
+		} finally {
+			await rm(fixtureDirectory, { recursive: true, force: true });
+		}
 		assert.equal(tree.children[0].data.hName, "a");
 		assert.match(tree.children[0].data.hProperties.class, /card-wiki-link/);
 		assert.equal(tree.children[0].children[0].data.hName, "span");

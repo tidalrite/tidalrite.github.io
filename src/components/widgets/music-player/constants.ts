@@ -1,10 +1,10 @@
-import childrenOfTheCityCover from "../../../assets/music/cover/children-of-the-city.png?url";
-import heroCover from "../../../assets/music/cover/hero.jpg?url";
-import inHellWeLiveLamentCover from "../../../assets/music/cover/in-hell-we-live-lament.jpg?url";
-import kaijuCover from "../../../assets/music/cover/kaiju.jpg?url";
-import saikaiCover from "../../../assets/music/cover/saikai.jpg?url";
-import throughPatchesOfVioletCover from "../../../assets/music/cover/through-patches-of-violet.jpg?url";
-import tianTianCover from "../../../assets/music/cover/tian-tian.jpg?url";
+import childrenOfTheCityCover from "../../../assets/music/cover/children-of-the-city.webp?url";
+import heroCover from "../../../assets/music/cover/hero.webp?url";
+import inHellWeLiveLamentCover from "../../../assets/music/cover/in-hell-we-live-lament.webp?url";
+import kaijuCover from "../../../assets/music/cover/kaiju.webp?url";
+import saikaiCover from "../../../assets/music/cover/saikai.webp?url";
+import throughPatchesOfVioletCover from "../../../assets/music/cover/through-patches-of-violet.webp?url";
+import tianTianCover from "../../../assets/music/cover/tian-tian.webp?url";
 import type { Song } from "./types";
 
 export const STORAGE_KEY_VOLUME = "music-player-volume";

@@ -87,11 +87,19 @@ describe("Default image loading boundary", () => {
 	});
 
 	it("ships player-sized local music covers while leaving remote covers dynamic", async () => {
-		assert.equal((musicConstants.match(/\.webp\?url/g) ?? []).length, 4);
-		assert.match(musicConstants, /cover: dazbeeCover/);
+		assert.equal((musicConstants.match(/\.webp\?url/g) ?? []).length, 7);
+		assert.match(musicConstants, /cover: childrenOfTheCityCover/);
 		assert.doesNotMatch(musicCoverSource, /fetchpriority="high"/);
 
-		for (const name of ["cl", "dazbee", "hitori", "xryx"]) {
+		for (const name of [
+			"children-of-the-city",
+			"hero",
+			"in-hell-we-live-lament",
+			"kaiju",
+			"saikai",
+			"through-patches-of-violet",
+			"tian-tian",
+		]) {
 			const path = new URL(
 				`../src/assets/music/cover/${name}.webp`,
 				import.meta.url,
@@ -99,6 +107,54 @@ describe("Default image loading boundary", () => {
 			const metadata = await sharp(fileURLToPath(path)).metadata();
 			assert.ok((metadata.width ?? Number.POSITIVE_INFINITY) <= 192);
 			assert.ok((metadata.height ?? Number.POSITIVE_INFINITY) <= 192);
+		}
+	});
+
+	it("serves every saved anime poster from a validated local WebP", async () => {
+		const manifest = JSON.parse(
+			await readFile(
+				new URL("../src/data/anime-local-covers.json", import.meta.url),
+				"utf8",
+			),
+		);
+		const animeSource = await readFile(
+			new URL("../src/data/anime.ts", import.meta.url),
+			"utf8",
+		);
+		const covers = [...animeSource.matchAll(/"cover":\s*"([^"]+)"/g)].map(
+			(match) => match[1],
+		);
+		assert.equal(covers.length, 107);
+		for (const source of new Set(covers)) {
+			const local = manifest[source];
+			assert.match(local ?? "", /^\/assets\/anime\/covers\/[a-f0-9]+\.webp$/);
+			const bytes = await readFile(
+				new URL(`../public${local}`, import.meta.url),
+			);
+			const metadata = await sharp(bytes).metadata();
+			assert.equal(metadata.format, "webp");
+			assert.ok(metadata.width > 0 && metadata.width <= 600);
+			assert.ok(bytes.length < 200_000);
+		}
+	});
+
+	it("keeps all active banners optimized, mirrored and publicly addressable", async () => {
+		const urls = [
+			...siteConfigSource.matchAll(
+				/"(\/assets\/desktop-banner\/tidalrite\/[^"\s]+)"/g,
+			),
+		].map((match) => match[1]);
+		assert.equal(new Set(urls).size, 35);
+		assert.ok(!urls.some((url) => /\/21\./.test(url)));
+		for (const url of new Set(urls)) {
+			assert.ok(url.endsWith(".webp"));
+			const original = await readFile(
+				new URL(`../public${url}`, import.meta.url),
+			);
+			const mirror = await readFile(
+				new URL(`../src/assets/public${url}`, import.meta.url),
+			);
+			assert.deepEqual(original, mirror);
 		}
 	});
 

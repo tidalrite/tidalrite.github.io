@@ -87,7 +87,10 @@ const settingsPanelSource = await readFile(
 );
 const translationSources = await Promise.all(
 	["en", "zh_CN", "zh_TW", "ja"].map((lang) =>
-		readFile(new URL(`../src/i18n/languages/${lang}.ts`, import.meta.url), "utf8"),
+		readFile(
+			new URL(`../src/i18n/languages/${lang}.ts`, import.meta.url),
+			"utf8",
+		),
 	),
 );
 const packageConfig = JSON.parse(
@@ -95,6 +98,16 @@ const packageConfig = JSON.parse(
 );
 
 describe("Global style loading regressions", () => {
+	it("does not request template analytics when third-party analytics is disabled", () => {
+		assert.match(
+			layoutSource,
+			/siteConfig\.thirdPartyAnalytics\?\.enable && \([\s\S]*?<AnalyticsScripts/,
+		);
+		assert.match(
+			layoutSource,
+			/siteConfig\.thirdPartyAnalytics\?\.enable && <noscript/,
+		);
+	});
 	it("loads shared styles from the root layout and verifies the build output", () => {
 		for (const stylesheet of [
 			"variables.styl",
@@ -139,8 +152,16 @@ describe("Global style loading regressions", () => {
 			"global Expressive Code styles must not be duplicated by encryption",
 		);
 		assert.match(globalStyleCheckSource, /about\/index\.html/);
-		assert.match(globalStyleCheckSource, /\.card-github/);
-		assert.match(globalStyleCheckSource, /\.custom-md \.image-grid/);
+		assert.match(
+			globalStyleCheckSource,
+			/requiredMarkup:\s*\[\["这里是 tidalrite 的个人空间",\s*"personal About content"\]\]/,
+			"the About-page build check must verify its actual personal introduction",
+		);
+		assert.match(
+			globalStyleCheckSource,
+			/stylesheetUrls[\s\S]*?rel\?\.split\(\/\\s\+\/\)[\s\S]*?value === "stylesheet"/,
+			"the build check must inspect linked stylesheets instead of stale example selectors",
+		);
 	});
 });
 

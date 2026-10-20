@@ -350,51 +350,65 @@ const bannerFormats = getImageFormats();
 				}
 
 				window.__bannerCarouselOrder = {
-					mobile: shuffledIndices(mobileCount),
-					desktop: shuffledIndices(desktopCount)
+					mobile: shuffledIndices(mobileCount, 0),
+					desktop: shuffledIndices(desktopCount, 0)
 				};
-				window.__bannerCarouselOrderPosition = { mobile: 0, desktop: 0 };
+				window.__bannerCarouselOrderPosition = { mobile: -1, desktop: -1 };
+				window.__bannerCarouselFailed = { mobile: [], desktop: [] };
 				window.__bannerCarouselIndex = {
-					mobile: window.__bannerCarouselOrder.mobile[0] || 0,
-					desktop: window.__bannerCarouselOrder.desktop[0] || 0
+					mobile: 0,
+					desktop: 0
 				};
-
-				function applyRandomInitialFrame(slotClass, type) {
-					var slot = container.querySelector('.' + slotClass);
-					var frames = window.__bannerCarouselFrames[slotClass];
-					var initialIndex = window.__bannerCarouselIndex[type];
-					if (!slot || !frames || !frames[initialIndex] || initialIndex === 0) return;
-					slot.innerHTML = frames[initialIndex];
-				}
-
-				applyRandomInitialFrame('banner-image-slot-mobile', 'mobile');
-				applyRandomInitialFrame('banner-image-slot-desktop', 'desktop');
 
 				function nextShuffledIndex(type, totalCount) {
 					var order = window.__bannerCarouselOrder[type];
 					var position = window.__bannerCarouselOrderPosition[type];
+					var failed = window.__bannerCarouselFailed[type];
 					if (!order || order.length !== totalCount) {
-						order = shuffledIndices(totalCount);
-						window.__bannerCarouselOrder[type] = order;
-						position = 0;
-					}
-					position += 1;
-					if (position >= totalCount) {
 						order = shuffledIndices(totalCount, window.__bannerCarouselIndex[type]);
-						window.__bannerCarouselOrder[type] = order;
-						position = 0;
+						position = -1;
+						failed = [];
 					}
-					window.__bannerCarouselOrderPosition[type] = position;
-					return order[position];
+					for (var attempt = 0; attempt < totalCount; attempt++) {
+						var nextPosition = position + 1;
+						if (nextPosition >= totalCount) {
+							order = shuffledIndices(totalCount, window.__bannerCarouselIndex[type]);
+							position = -1;
+							nextPosition = 0;
+							failed = [];
+						}
+						var candidateIndex = order[nextPosition];
+						position = nextPosition;
+						if (failed.indexOf(candidateIndex) === -1) {
+							window.__bannerCarouselOrder[type] = order;
+							window.__bannerCarouselOrderPosition[type] = position;
+							window.__bannerCarouselFailed[type] = failed;
+							return candidateIndex;
+						}
+					}
+					return window.__bannerCarouselIndex[type];
 				}
 
 				function previousShuffledIndex(type, totalCount) {
 					var order = window.__bannerCarouselOrder[type];
 					if (!order || order.length !== totalCount) return window.__bannerCarouselIndex[type];
 					var position = window.__bannerCarouselOrderPosition[type] - 1;
-					if (position < 0) position = totalCount - 1;
-					window.__bannerCarouselOrderPosition[type] = position;
-					return order[position];
+					var failed = window.__bannerCarouselFailed[type];
+					for (var attempt = 0; attempt < totalCount; attempt++) {
+						if (position < 0) position = totalCount - 1;
+						if (failed.indexOf(order[position]) === -1) return order[position];
+						position -= 1;
+					}
+					return window.__bannerCarouselIndex[type];
+				}
+
+				function markIndexFailed(type, index) {
+					var failed = window.__bannerCarouselFailed[type] || [];
+					if (failed.indexOf(index) === -1) failed.push(index);
+					window.__bannerCarouselFailed[type] = failed;
+					var order = window.__bannerCarouselOrder[type];
+					var failedPosition = order && order.indexOf(index);
+					if (failedPosition >= 0) window.__bannerCarouselOrderPosition[type] = failedPosition;
 				}
 
 				// 断点检测（md = 768px）
@@ -403,6 +417,14 @@ const bannerFormats = getImageFormats();
 					var isMd = window.matchMedia('(min-width: 768px)').matches;
 					if (cl.contains('md:hidden') && isMd) return true;
 					if (cl.contains('hidden') && !cl.contains('md:hidden') && !isMd) return true;
+					if (document.body.classList.contains('no-banner-mode')) return true;
+					var wrapper = document.getElementById('banner-wrapper');
+					if (
+						wrapper &&
+						window.innerWidth < 1280 &&
+						wrapper.classList.contains('mobile-hide-banner')
+					) return true;
+					if (wrapper && getComputedStyle(wrapper).display === 'none') return true;
 					return false;
 				}
 
@@ -447,6 +469,7 @@ const bannerFormats = getImageFormats();
 				// Crossfade：创建新层叠在旧层上方，淡入后移除旧层
 				function crossfadeToIndex(slotClass, totalCount, type, targetIndex) {
 					if (totalCount <= 1) return;
+					if (targetIndex === window.__bannerCarouselIndex[type]) return;
 					if (isCrossfading[type]) return;
 
 					var frames = window.__bannerCarouselFrames[slotClass];
@@ -457,14 +480,6 @@ const bannerFormats = getImageFormats();
 					if (isSlotHiddenByBreakpoint(oldSlot)) return;
 
 					isCrossfading[type] = true;
-					window.__bannerCarouselIndex[type] = targetIndex;
-					var order = window.__bannerCarouselOrder[type];
-					if (order) {
-						var orderPosition = order.indexOf(targetIndex);
-						if (orderPosition >= 0) {
-							window.__bannerCarouselOrderPosition[type] = orderPosition;
-						}
-					}
 
 					// 清理快速交互可能残留的中间层
 					cleanupOrphanedLayers(slotClass, oldSlot);
@@ -477,26 +492,109 @@ const bannerFormats = getImageFormats();
 					newSlot.innerHTML = frames[targetIndex];
 					oldSlot.parentNode.insertBefore(newSlot, oldSlot.nextSibling);
 
-					// 双 rAF：确保 opacity:0 已绘制，然后同时触发淡入 + Ken Burns
-					requestAnimationFrame(function() {
-						requestAnimationFrame(function() {
-							newSlot.style.opacity = '1';
-							newSlot.classList.add('banner-kb');
-						});
-					});
-
-					// 淡入完成后：移除旧层，清理 transition，释放锁
-					setTimeout(function() {
-						if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
-						newSlot.style.transition = '';
+					var loadTimeoutId;
+					var transitionStarted = false;
+					var candidateFinished = false;
+					function discardCandidate() {
+						if (candidateFinished || transitionStarted) return;
+						candidateFinished = true;
+						if (loadTimeoutId) clearTimeout(loadTimeoutId);
+						if (newSlot.parentNode) newSlot.parentNode.removeChild(newSlot);
 						isCrossfading[type] = false;
-					}, FADE_MS + 50);
+					}
+					function beginTransition() {
+						if (transitionStarted || candidateFinished) return;
+						transitionStarted = true;
+						candidateFinished = true;
+						clearTimeout(loadTimeoutId);
+						window.__bannerCarouselIndex[type] = targetIndex;
+						var order = window.__bannerCarouselOrder[type];
+						var orderPosition = order && order.indexOf(targetIndex);
+						if (orderPosition >= 0) {
+							window.__bannerCarouselOrderPosition[type] = orderPosition;
+						}
+
+						// 双 rAF：确保新图已就绪且 opacity:0 已绘制，再交叉淡入。
+						requestAnimationFrame(function() {
+							requestAnimationFrame(function() {
+								newSlot.style.opacity = '1';
+								newSlot.classList.add('banner-kb');
+							});
+						});
+						setTimeout(function() {
+							if (oldSlot.parentNode) oldSlot.parentNode.removeChild(oldSlot);
+							newSlot.style.transition = '';
+							isCrossfading[type] = false;
+						}, FADE_MS + 50);
+					}
+
+					var images = newSlot.querySelectorAll('img');
+					if (!images.length) {
+						discardCandidate();
+						return;
+					}
+					loadTimeoutId = setTimeout(function() {
+						markIndexFailed(type, targetIndex);
+						discardCandidate();
+					}, 10000);
+					var remainingImages = images.length;
+					var imageFailed = false;
+					function onImageReady() {
+						if (imageFailed || candidateFinished) return;
+						remainingImages -= 1;
+						if (remainingImages === 0) beginTransition();
+					}
+					function onImageFailure() {
+						if (imageFailed || candidateFinished) return;
+						imageFailed = true;
+						markIndexFailed(type, targetIndex);
+						discardCandidate();
+					}
+					for (var imageIndex = 0; imageIndex < images.length; imageIndex++) {
+						(function(image) {
+							image.loading = 'eager';
+							var imageReady = false;
+							function onThisImageReady() {
+								if (imageReady) return;
+								imageReady = true;
+								onImageReady();
+							}
+							function hasRealSource() {
+								return !!image.currentSrc && !/^data:/i.test(image.currentSrc);
+							}
+							function verifyLoadedImage() {
+								if (!hasRealSource()) return;
+								if (!image.complete) return;
+								if (image.naturalWidth === 0) {
+									onImageFailure();
+									return;
+								}
+								if (typeof image.decode === 'function') {
+									image.decode().then(onThisImageReady, onImageFailure);
+								} else {
+									onThisImageReady();
+								}
+							}
+							image.addEventListener('load', verifyLoadedImage);
+							image.addEventListener('error', function() {
+								if (hasRealSource()) onImageFailure();
+							});
+							// Picture source selection can happen after insertion; ignore its
+							// transparent 1x1 fallback until the real currentSrc is selected.
+							requestAnimationFrame(function() {
+								requestAnimationFrame(verifyLoadedImage);
+							});
+						})(images[imageIndex]);
+					}
 				}
 
 				// 自动轮播用的 crossfade（前进到下一张）
 				function crossfade(slotClass, totalCount, type) {
+					if (isCrossfading[type]) return;
 					var frames = window.__bannerCarouselFrames[slotClass];
 					if (!frames || frames.length === 0) return;
+					var slot = container.querySelector('.' + slotClass);
+					if (!slot || isSlotHiddenByBreakpoint(slot)) return;
 					var nextIndex = nextShuffledIndex(type, totalCount);
 					crossfadeToIndex(slotClass, totalCount, type, nextIndex);
 				}
@@ -609,7 +707,7 @@ const bannerFormats = getImageFormats();
 						: 'banner-image-slot-desktop';
 					var type = isMobile ? 'mobile' : 'desktop';
 					var count = isMobile ? mobileCount : desktopCount;
-					if (Math.abs(diffX) > 50) {
+					if (Math.abs(diffX) > 50 && !isCrossfading[type]) {
 						if (diffX > 0) {
 							var next = nextShuffledIndex(type, count);
 							crossfadeToIndex(slotClass, count, type, next);

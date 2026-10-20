@@ -136,92 +136,25 @@ const renderGroups = [
 	})();
 	</script>
 
-	{isCarouselEnabled ? (
-			renderGroups.map(group => group.hasImages && (
-				<div class={`${group.containerClass} w-full h-full relative`} style="transform: translateZ(0);">
-					{group.images.map((src, index) => (
-						<div
-							class={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${positionClass}`}
-							data-carousel-item={index}
-							style={`transform: translateZ(0); backface-visibility: hidden; will-change: opacity; opacity: ${index === 0 ? 1 : 0};`}
-						>
-							<div class="wallpaper-artwork absolute inset-0">
-								<div class="wallpaper-artwork-backdrop absolute inset-0" aria-hidden="true">
-									<Image src={src} alt="" class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
-								</div>
-								<div class="wallpaper-artwork-foreground relative z-10 h-full w-full">
-									<Image src={src} alt={`${group.key} wallpaper ${index + 1}`} class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
-								</div>
+	{renderGroups.map(group => group.hasImages && (
+		<div class={`${group.containerClass} w-full h-full relative`} data-wallpaper-group={group.key}>
+			{group.images.map((src, index) => (
+				<template data-wallpaper-frame={index}>
+					<div class={`wallpaper-frame absolute inset-0 w-full h-full transition-opacity duration-1000 ${positionClass}`}>
+						<div class="wallpaper-artwork absolute inset-0">
+							<div class="wallpaper-artwork-backdrop absolute inset-0" aria-hidden="true">
+								<Image src={src} alt="" class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
+							</div>
+							<div class="wallpaper-artwork-foreground relative z-10 h-full w-full">
+								<Image src={src} alt={`${group.key} wallpaper ${index + 1}`} class="w-full h-full" position={position} widths={group.key === "mobile" ? [640, 1024, 1536] : [1024, 1536, 2048, 2560]} sizes="100vw" loading="lazy" fetchpriority="low" quality={group.key === "mobile" ? Math.round(wallpaperQuality * 0.9) : wallpaperQuality} formats={wallpaperFormats} overlay={false} />
 							</div>
 						</div>
-				))}
-			</div>
-		))
-	) : (
-		<div id="wallpaper-single-container" class="w-full h-full relative"></div>
-	)}
+					</div>
+				</template>
+			))}
+		</div>
+	))}
 </div>
-
-<script is:inline define:vars={{ desktopImages: imageSources.desktop, mobileImages: imageSources.mobile, positionClass }}>
-	(function() {
-		const container = document.getElementById('wallpaper-single-container');
-		if (!container) return;
-
-		const getRandomImage = (images, storageKey) => {
-			if (images.length === 0) {return null;}
-			if (images.length === 1) {return images[0];}
-			
-			const lastIndex = sessionStorage.getItem(storageKey);
-			let newIndex;
-			
-			do {
-				newIndex = Math.floor(Math.random() * images.length);
-			} while (newIndex === parseInt(lastIndex || '-1'));
-			
-			sessionStorage.setItem(storageKey, newIndex.toString());
-			return images[newIndex];
-		};
-		
-		const desktopSrc = getRandomImage(desktopImages, 'wallpaper_desktop_index');
-		const mobileSrc = getRandomImage(mobileImages, 'wallpaper_mobile_index');
-		
-		if (desktopSrc) {
-			const desktopDiv = document.createElement('div');
-			desktopDiv.className = 'hidden lg:block w-full h-full relative';
-			desktopDiv.style.transform = 'translateZ(0)';
-			desktopDiv.innerHTML = `
-				<img
-					src="${desktopSrc}"
-					alt="desktop wallpaper"
-					class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${positionClass}"
-					style="transform: translateZ(0); backface-visibility: hidden; will-change: opacity; opacity: 1;"
-					decoding="async"
-					loading="lazy"
-					fetchpriority="low"
-				/>
-			`;
-			container.appendChild(desktopDiv);
-		}
-		
-		if (mobileSrc) {
-			const mobileDiv = document.createElement('div');
-			mobileDiv.className = 'block lg:hidden w-full h-full relative';
-			mobileDiv.style.transform = 'translateZ(0)';
-			mobileDiv.innerHTML = `
-				<img
-					src="${mobileSrc}"
-					alt="mobile wallpaper"
-					class="absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${positionClass}"
-					style="transform: translateZ(0); backface-visibility: hidden; will-change: opacity; opacity: 1;"
-					decoding="async"
-					loading="lazy"
-					fetchpriority="low"
-				/>
-			`;
-			container.appendChild(mobileDiv);
-		}
-	})();
-</script>
 
 <style is:global>
 	/* 覆盖 / 全屏壁纸：完整展示原图，模糊放大的同图补足屏幕空白。 */
@@ -260,10 +193,10 @@ const renderGroups = [
 	}
 </style>
 
-<script is:inline define:vars={{ carouselInterval }}>
+<script is:inline define:vars={{ carouselInterval, carouselEnabled: !!isCarouselEnabled, wallpaperEnabled: config.enable ?? true }}>
 	function initFullscreenWallpaperCarousel() {
-		const container = document.querySelector('[data-fullscreen-wallpaper]');
-		if (!container) {return;}
+		const root = document.querySelector('[data-fullscreen-wallpaper]');
+		if (!root) return;
 
 		if (window.__wallpaper_cleanup) {
 			window.__wallpaper_cleanup();
@@ -271,89 +204,245 @@ const renderGroups = [
 		}
 
 		const STORAGE_KEY = 'mizuki_wallpaper_index';
-		const savedIndex = parseInt(sessionStorage.getItem(STORAGE_KEY) || '0');
+		const groups = Array.from(root.querySelectorAll('[data-wallpaper-group]')).map((group) => ({
+			key: group.dataset.wallpaperGroup,
+			node: group,
+			frames: Array.from(group.querySelectorAll('template[data-wallpaper-frame]')),
+			mounted: new Map(),
+			currentIndex: 0,
+			timer: null,
+			busy: false,
+			activating: false,
+			generation: 0,
+		}));
+		let activeGroup = null;
+		let disposed = false;
+		const desktopQuery = window.matchMedia('(min-width: 768px)');
 
-		const groups = [
-			container.querySelectorAll('.hidden.md\\:block [data-carousel-item]'),
-			container.querySelectorAll('.block.md\\:hidden [data-carousel-item]')
-		];
+		function currentMode() {
+			return wallpaperEnabled ? (localStorage.getItem('wallpaperMode') || 'banner') : 'banner';
+		}
 
-		const state = groups.map(items => {
-			const safeIndex = (savedIndex >= 0 && savedIndex < items.length) ? savedIndex : 0;
-			return {
-				items,
-				currentIndex: safeIndex,
-				timer: null,
-				active: items.length > 1
-			};
-		});
+		function removeMountedFrame(group, index, expected) {
+			const mounted = group.mounted.get(index);
+			if (!mounted || (expected && mounted !== expected)) return;
+			mounted.cancelReady?.();
+			mounted.node.querySelectorAll('img, source').forEach((media) => {
+				media.removeAttribute('src');
+				media.removeAttribute('srcset');
+			});
+			mounted.node.remove();
+			group.mounted.delete(index);
+		}
 
-		// 初始化显示：根据 savedIndex 立即修正图片显示
-		function initImage(stateItem) {
-			const { items, currentIndex } = stateItem;
-			// 立即设置样式，防止视觉上跳回第一张
-			for (let i = 0; i < items.length; i++) {
-				items[i].style.opacity = i === currentIndex ? '1' : '0';
+		function stopGroup(group, clearFrames = true) {
+			group.generation += 1;
+			if (group.timer !== null) {
+				clearTimeout(group.timer);
+				group.timer = null;
 			}
+			if (clearFrames) {
+				for (const index of group.mounted.keys()) removeMountedFrame(group, index);
+			}
+			group.busy = false;
+			group.activating = false;
 		}
 
-		// 切换下一张
-		function switchNextImage(stateItem) {
-			const { items, currentIndex } = stateItem;
-			const nextIndex = (currentIndex + 1) % items.length;
-			
-			items[currentIndex].style.opacity = '0';
-			items[nextIndex].style.opacity = '1';
-			
-			stateItem.currentIndex = nextIndex;
-
-			sessionStorage.setItem(STORAGE_KEY, nextIndex.toString());
+		function isActive(group) {
+			return !disposed && !document.hidden && root.isConnected && currentMode() === 'overlay' &&
+				(group.key === 'desktop' ? desktopQuery.matches : !desktopQuery.matches);
 		}
 
-		function start() {
-			state.forEach(s => {
-				if (s.active && !s.timer) {
-					s.timer = setInterval(() => {
-						if (!document.body.contains(s.items[0])) {
-							stop();
-							return;
+		function mountFrame(group, index) {
+			const existing = group.mounted.get(index);
+			if (existing) return existing;
+			const template = group.frames[index];
+			if (!template) return null;
+
+			const frame = document.createElement('div');
+			frame.className = 'wallpaper-frame absolute inset-0 w-full h-full transition-opacity duration-1000';
+			frame.style.opacity = '0';
+			frame.appendChild(template.content.cloneNode(true));
+			const images = Array.from(frame.querySelectorAll('img'));
+			for (const image of images) {
+				image.loading = 'eager';
+				image.decoding = 'async';
+				image.fetchPriority = 'low';
+			}
+			group.node.appendChild(frame);
+			let cancelReady = () => {};
+			const ready = new Promise((resolve) => {
+				let settled = false;
+				const decoded = new WeakSet();
+				const decoding = new WeakSet();
+				const timeoutId = setTimeout(() => finish(false), 12000);
+				function finish(ok) {
+					if (settled) return;
+					settled = true;
+					clearTimeout(timeoutId);
+					for (const image of images) {
+						image.removeEventListener('load', checkImage);
+						image.removeEventListener('error', failImage);
+					}
+					resolve(ok);
+				}
+				let pending = images.length;
+				function checkImage() {
+					if (decoded.has(this) || decoding.has(this)) return;
+					if (this.naturalWidth === 0) return failImage();
+					if (typeof this.decode === 'function') {
+						decoding.add(this);
+						this.decode().then(() => {
+							decoded.add(this);
+							pending -= 1;
+							if (pending === 0) finish(true);
+						}, () => {
+							if (this.naturalWidth > 0) {
+								decoded.add(this);
+								pending -= 1;
+								if (pending === 0) finish(true);
+							} else finish(false);
+						});
+					} else {
+						decoded.add(this);
+						pending -= 1;
+						if (pending === 0) finish(true);
+					}
+				}
+				function failImage() { finish(false); }
+				cancelReady = () => finish(false);
+				if (pending === 0) finish(false);
+				for (const image of images) {
+					image.addEventListener('load', checkImage);
+					image.addEventListener('error', failImage);
+					if (image.complete) checkImage.call(image);
+				}
+			});
+			const mounted = { node: frame, ready };
+			mounted.cancelReady = cancelReady;
+			group.mounted.set(index, mounted);
+			return mounted;
+		}
+
+		function preloadNext(group) {
+			if (!carouselEnabled || group.frames.length < 2 || !isActive(group)) return;
+			const nextIndex = (group.currentIndex + 1) % group.frames.length;
+			const next = mountFrame(group, nextIndex);
+			if (next) next.ready.then((ok) => {
+				if (!ok && group.mounted.has(nextIndex) && nextIndex !== group.currentIndex) {
+					removeMountedFrame(group, nextIndex, next);
+				}
+			});
+		}
+
+		function scheduleNext(group) {
+			if (!carouselEnabled || group.frames.length < 2 || !isActive(group)) return;
+			group.timer = setTimeout(() => switchToNext(group), Math.max(1500, carouselInterval * 1000));
+		}
+
+		async function switchToNext(group) {
+			group.timer = null;
+			if (!isActive(group) || group.busy || group.frames.length < 2) return;
+			group.busy = true;
+			const generation = group.generation;
+			const oldIndex = group.currentIndex;
+			for (let offset = 1; offset < group.frames.length; offset += 1) {
+				if (!isActive(group) || generation !== group.generation) break;
+				const nextIndex = (oldIndex + offset) % group.frames.length;
+				const next = mountFrame(group, nextIndex);
+				if (!next) continue;
+				const ready = await next.ready;
+				if (!ready || !isActive(group) || generation !== group.generation) {
+					if (!ready) removeMountedFrame(group, nextIndex, next);
+					continue;
+				}
+				const old = group.mounted.get(oldIndex);
+				next.node.style.opacity = '1';
+				if (old) {
+					old.node.style.opacity = '0';
+					setTimeout(() => {
+						removeMountedFrame(group, oldIndex, old);
+						if (generation === group.generation && isActive(group)) {
+							preloadNext(group);
+							scheduleNext(group);
 						}
-						switchNextImage(s);
-					}, carouselInterval * 1000);
+					}, 1050);
 				}
-			});
-		}
-
-		function stop() {
-			state.forEach(s => {
-				if (s.timer) {
-					clearInterval(s.timer);
-					s.timer = null;
+				group.currentIndex = nextIndex;
+				try { sessionStorage.setItem(STORAGE_KEY, String(nextIndex)); } catch {}
+				group.busy = false;
+				if (!old) {
+					preloadNext(group);
+					scheduleNext(group);
 				}
-			});
-		}
-
-		const handleVisibilityChange = () => {
-			if (document.hidden) {
-				stop();
-			} else {
-				const exists = state.some(s => s.items.length > 0 && document.body.contains(s.items[0]));
-				if (exists) {start();}
+				return;
 			}
-		};
+			group.busy = false;
+			scheduleNext(group);
+		}
 
-		// 初始化状态
-		state.forEach(s => {
-			if (s.items.length > 0) {initImage(s);}
-		});
+		async function activate(group) {
+			if (!group.frames.length || !isActive(group)) return;
+			stopGroup(group);
+			activeGroup = group;
+			const generation = group.generation;
+			group.activating = true;
+			let initialIndex = 0;
+			try {
+				const stored = Number.parseInt(sessionStorage.getItem(STORAGE_KEY) || '0', 10);
+				if (Number.isInteger(stored) && stored >= 0 && stored < group.frames.length) initialIndex = stored;
+			} catch {}
+			group.currentIndex = initialIndex;
+			for (let offset = 0; offset < group.frames.length; offset += 1) {
+				if (!isActive(group) || generation !== group.generation) return;
+				const index = (initialIndex + offset) % group.frames.length;
+				const mounted = mountFrame(group, index);
+				if (!mounted) continue;
+				if (await mounted.ready && isActive(group) && generation === group.generation) {
+					group.activating = false;
+					group.currentIndex = index;
+					mounted.node.style.opacity = '1';
+					try { sessionStorage.setItem(STORAGE_KEY, String(index)); } catch {}
+					preloadNext(group);
+					scheduleNext(group);
+					return;
+				}
+				removeMountedFrame(group, index, mounted);
+			}
+			if (generation === group.generation) group.activating = false;
+		}
 
-		start();
+		function syncActiveGroup() {
+			if (document.hidden || currentMode() !== 'overlay' || !wallpaperEnabled || !root.isConnected) {
+				for (const group of groups) stopGroup(group);
+				activeGroup = null;
+				return;
+			}
+			const desired = groups.find((group) => group.key === (desktopQuery.matches ? 'desktop' : 'mobile'));
+			if (desired === activeGroup && (desired?.mounted.size || desired?.activating)) return;
+			for (const group of groups) if (group !== desired) stopGroup(group);
+			if (desired) activate(desired);
+		}
 
+		const handleModeChange = () => syncActiveGroup();
+		const handleVisibilityChange = () => syncActiveGroup();
+		const handleBreakpointChange = () => syncActiveGroup();
+		const handlePageView = () => syncActiveGroup();
+		window.addEventListener('wallpaper-mode-change', handleModeChange);
 		document.addEventListener('visibilitychange', handleVisibilityChange);
+		document.addEventListener('swup:page:view', handlePageView);
+		desktopQuery.addEventListener?.('change', handleBreakpointChange);
+		window.addEventListener('resize', handleBreakpointChange);
+		syncActiveGroup();
 
 		window.__wallpaper_cleanup = () => {
-			stop();
+			disposed = true;
+			for (const group of groups) stopGroup(group);
+			window.removeEventListener('wallpaper-mode-change', handleModeChange);
 			document.removeEventListener('visibilitychange', handleVisibilityChange);
+			document.removeEventListener('swup:page:view', handlePageView);
+			desktopQuery.removeEventListener?.('change', handleBreakpointChange);
+			window.removeEventListener('resize', handleBreakpointChange);
 		};
 	}
 
