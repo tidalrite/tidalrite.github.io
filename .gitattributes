@@ -1,2 +1,2 @@
-* text=auto eol=lf
-*.js linguist-language=astro
+# Vendored Live2D files must retain their upstream bytes and checksums.
+public/pio/models/rem/** -text -diff
